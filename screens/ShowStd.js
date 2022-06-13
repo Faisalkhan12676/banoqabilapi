@@ -203,7 +203,7 @@ const ShowStd = () => {
           </View>
           <Divider />
           <View style={styles.div}>
-            <Text style={styles.headding}>Name</Text>
+            <Text style={styles.headding}>Registration No</Text>
             <Text style={styles.text}>{user.username + user.id}</Text>
           </View>
           <Divider />
@@ -308,6 +308,7 @@ const ShowStd = () => {
                 // linkedinAccount: '' || data.linkedinAccount,
                 // instagramAccount: '' || data.instagramAccount,
                 email: '' || data.email,
+                enrollmentDate: '' || data.enrollmentDate,
               }}
               onSubmit={(values, actions) => {
                 console.log(token, 'token');
@@ -324,7 +325,7 @@ const ShowStd = () => {
                   linkedinAccount: null,
                   presentAddress: values.presentAddress, //
                   cnic: values.cnic, //
-                  enrollmentDate: today, //
+                  enrollmentDate: data.enrollmentDate, //
                   gender: values.gender, //
                   cityId: values.cityId, //
                   fatherOccupation: values.fatherOccupation, //
@@ -349,7 +350,7 @@ const ShowStd = () => {
                       linkedinAccount: null,
                       presentAddress: values.presentAddress, //
                       cnic: values.cnic, //
-                      // enrollmentDate: null, //
+                      enrollmentDate: values.enrollmentDate, //
                       gender: values.gender, //
                       cityId: values.cityId, //
                       fatherOccupation: values.fatherOccupation, //
@@ -418,6 +419,7 @@ const ShowStd = () => {
                       </Text>
 
                       <TextInput
+                      activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="fatherName"
@@ -433,6 +435,7 @@ const ShowStd = () => {
                         {touched.fatherName && errors.fatherName}
                       </HelperText>
                       <TextInput
+                      activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="Father Occupation"
@@ -486,6 +489,7 @@ const ShowStd = () => {
                       </TouchableOpacity>
 
                       <TextInput
+                      activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20}}
                         mode="flat"
                         placeholder="email"
@@ -631,6 +635,7 @@ const ShowStd = () => {
                       </View>
 
                       <TextInput
+                      activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="CNIC"
@@ -647,6 +652,7 @@ const ShowStd = () => {
                       </HelperText>
 
                       <TextInput
+                      activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="Present Address"
@@ -665,6 +671,7 @@ const ShowStd = () => {
                       </HelperText>
 
                       <TextInput
+                      activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="Whatsapp Number"
@@ -683,6 +690,7 @@ const ShowStd = () => {
                       </HelperText>
 
                       <TextInput
+                      activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="Facebook Account"

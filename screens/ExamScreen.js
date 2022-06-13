@@ -502,7 +502,17 @@ const ExamScreen = () => {
             mode="contained"
             color={color.primary}
             onPress={() => {
-              alert('Your exam is completed');
+              //show Alert
+              Alert.alert(
+                'Bano Qabil',
+                'Your Exam Has Been Finished',
+                [
+                  
+                  {text: 'OK', onPress: () => console.log('OK Pressed')},
+                ],
+                {cancelable: false},
+              );
+              
               navigation.navigate('TabNavigator');
             }}>
             Finish

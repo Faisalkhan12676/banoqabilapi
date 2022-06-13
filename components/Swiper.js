@@ -3,8 +3,8 @@ import React from 'react';
 import Swiper from 'react-native-swiper';
 
 const Slider = () => {
-  const img1 = require('../assets/Banners-01.jpg');
-  const img2 = require('../assets/Banners-02.jpg');
+  // const img1 = require('../assets/Banners-01.jpg');
+  // const img2 = require('../assets/Banners-02.jpg');
   const img3 = require('../assets/Banner-03.jpg');
   const img4 = require('../assets/Banner-04.jpeg');
   const img5 = require('../assets/Banner-05.jpg');

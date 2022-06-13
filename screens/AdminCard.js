@@ -25,6 +25,7 @@ const AdminCard = () => {
   // const [data, setData] = useState([]);
   const [isloading, setIsLoading] = useState(true);
   const [imgs, setImgs] = useState('');
+  const [user, setUser] = useState([]);
   useEffect(() => {
     const picture = async () => {
       try {
@@ -60,9 +61,10 @@ const AdminCard = () => {
             .then(res => {
               setIsLoading(false);
               console.log(res.data);
-              const {student} = res.data;
+              const {student,user} = res.data;
               setUsername(student);
-              console.log(student.user)
+              setUser(user);
+              console.log(user)
               console.log("GOTITT")
             })
             .catch(err => {
@@ -99,6 +101,17 @@ const AdminCard = () => {
               ref={ViewShotref}
               options={{format: 'png', quality: 1.0}}>
               <Avatar.Image size={170} source={{uri: imgs}}  />
+
+              <View style={styles.content}>
+                <Text style={styles.title}>Registration No</Text>
+                <Text style={styles.title}>{user.username + user.id}</Text>
+              </View>
+              <Divider
+                style={{
+                  height: 2,
+                  width: '100%',
+                }}
+              />
 
               <View style={styles.content}>
                 <Text style={styles.title}>Name</Text>
@@ -176,9 +189,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   title: {
-    fontSize: 20,
-    marginHorizontal: 20,
+    fontSize: 16,
+    marginHorizontal: 10,
   },
 });
