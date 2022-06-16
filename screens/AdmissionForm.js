@@ -257,7 +257,7 @@ const AdmissionForm = () => {
                                   textAlign: 'center',
                                   fontWeight: 'bold',
                                 }}>
-                                Course Detail
+                                Description
                               </Text>
 
                               <ScrollView

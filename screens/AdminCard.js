@@ -18,6 +18,7 @@ import ViewShot, {captureScreen} from 'react-native-view-shot';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL} from '../config';
+import QRCode from 'react-native-qrcode-svg';
 
 const AdminCard = () => {
   const ViewShotref = useRef();
@@ -61,11 +62,11 @@ const AdminCard = () => {
             .then(res => {
               setIsLoading(false);
               console.log(res.data);
-              const {student,user} = res.data;
+              const {student, user} = res.data;
               setUsername(student);
               setUser(user);
-              console.log(user)
-              console.log("GOTITT")
+              console.log(user);
+              console.log('GOTITT');
             })
             .catch(err => {
               console.log(err);
@@ -81,16 +82,24 @@ const AdminCard = () => {
     picture();
   }, []);
 
+  var segs = [
+    { data: `Registration No ${user.username + user.id}`, mode: 'byte' },
+    { data: `\n Name ${username.user}`, mode: 'byte' },
+    { data: `\n Father Name ${username.fatherName}`, mode: 'byte' },
+    { data: `\n Phone Number ${username.whatsappNumber}`, mode: 'byte' },
+  ]
+
   return (
     <>
       {isloading ? (
         <>
-        <View style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-          <ActivityIndicator animating={true} color={Colors.green400} />
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator animating={true} color={Colors.green400} />
           </View>
         </>
       ) : (
@@ -100,7 +109,7 @@ const AdminCard = () => {
               style={styles.cardcontainer}
               ref={ViewShotref}
               options={{format: 'png', quality: 1.0}}>
-              <Avatar.Image size={170} source={{uri: imgs}}  />
+              <Avatar.Image size={120} source={{uri: imgs}}  />
 
               <View style={styles.content}>
                 <Text style={styles.title}>Registration No</Text>
@@ -143,7 +152,12 @@ const AdminCard = () => {
                   width: '100%',
                 }}
               />
-             
+              <View
+                style={{
+                  marginTop: 20,
+                }}>
+                <QRCode value={segs} backgroundColor="transparent" size={120} />
+              </View>
             </ViewShot>
           </View>
         </>

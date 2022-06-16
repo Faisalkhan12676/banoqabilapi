@@ -1,12 +1,13 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Alert, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import {TextInput, HelperText, Button,RadioButton} from 'react-native-paper';
+import {TextInput, HelperText, Button, RadioButton} from 'react-native-paper';
 import {color} from '../components/Colors';
 import {useNavigation, StackActions} from '@react-navigation/native';
 import axios from 'axios';
 import {BASE_URL} from '../config';
+
 
 const ForgetScreen = () => {
   const [disbleText, setDisbleText] = useState(false);
@@ -21,16 +22,21 @@ const ForgetScreen = () => {
     axios
       .post(`${BASE_URL}/Auth/OtpVarification`, {
         username: username,
-        otp: code,
+        otp: parseInt(code),
       })
       .then(res => {
         console.log(res);
         //replace screen with payload
-        navigation.dispatch(
-          StackActions.replace('NewPassword', {
-            username: username,
-          }),
-        );
+        if (res.data === true) {
+          navigation.dispatch(
+            StackActions.replace('NewPassword', {
+              username: username,
+            }),
+          );
+        }else if(res.data === false){
+          //Show Alert that code is wrong
+          Alert.alert('Wrong Code', 'Please try again', [{text: 'OK'}]);
+        }
       })
       .catch(err => {
         console.log('err', err);
@@ -49,12 +55,19 @@ const ForgetScreen = () => {
           console.log(values);
           setUsername(values.username);
           axios
-            .post(`${BASE_URL}/Auth/ForgotPassword`,{
+            .post(`${BASE_URL}/Auth/ForgotPassword`, {
               username: values.username,
               type: values.type,
             })
             .then(res => {
               if (res.status === 200) {
+                //show alert
+                Alert.alert(
+                  'Bano Qabil',
+                  'Your 6 Digit Verification Code Has Been Sent To Your Email ',
+                  [{text: 'OK'}],
+                  {cancelable: false},
+                );
                 console.log('RESPONSE', res);
                 setUsernameErr('');
                 setDisbleText(true);
@@ -72,7 +85,14 @@ const ForgetScreen = () => {
           username: Yup.string().required('Username is required'),
           type: Yup.string().required('Type is required'),
         })}>
-        {({handleChange, handleSubmit, values, errors, touched,setFieldValue}) => (
+        {({
+          handleChange,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+          setFieldValue,
+        }) => (
           <View
             style={{
               flex: 1,
@@ -116,40 +136,43 @@ const ForgetScreen = () => {
                   Please Enter Your Username We will send You 6 Digit
                   Verification Code
                 </HelperText>
-                <HelperText style={{
-                  fontWeight: 'bold',
-                }}>
+                <HelperText
+                  style={{
+                    fontWeight: 'bold',
+                  }}>
                   Please Select Varification type
                 </HelperText>
                 <RadioButton.Group
                   onValueChange={value => {
                     setFieldValue('type', value);
-                  }}
-                  
-                  
-                >
+                  }}>
                   <View
                     style={{
                       flexDirection: 'row',
-                     
                     }}>
-                    <RadioButton.Item  color={color.primary} position='leading' disabled={isloading} label="Text Message" value="phone" 
-                    status={values.type === 'phone' ? 'checked' : 'unchecked'} />
-                  
-                    <RadioButton.Item  color={color.primary} position='leading' disabled={isloading} label="Email" value="email"
-                    status={values.type === 'email' ? 'checked' : 'unchecked'}
+                    <RadioButton.Item
+                      color={color.primary}
+                      position="leading"
+                      disabled={isloading}
+                      label="Text Message"
+                      value="phone"
+                      status={values.type === 'phone' ? 'checked' : 'unchecked'}
+                    />
+
+                    <RadioButton.Item
+                      color={color.primary}
+                      position="leading"
+                      disabled={isloading}
+                      label="Email"
+                      value="email"
+                      status={values.type === 'email' ? 'checked' : 'unchecked'}
                     />
                   </View>
                 </RadioButton.Group>
-                
-              
               </>
             )}
 
-            
-            <HelperText
-              type="error"
-              visible={errors.type && touched.type}>
+            <HelperText type="error" visible={errors.type && touched.type}>
               {errors.type}
             </HelperText>
             {disbleText ? (
@@ -174,14 +197,14 @@ const ForgetScreen = () => {
                   disabled={code.length < 6 || code.length > 6}
                   style={styles.button}
                   onPress={handleCode}>
-                  Varify
+                  Re-Confirm
                 </Button>
               </>
             ) : (
               <>
                 <Button
-                loading={isloading}
-                disabled={isloading}
+                  loading={isloading}
+                  disabled={isloading}
                   mode="contained"
                   color={color.primary}
                   style={styles.button}

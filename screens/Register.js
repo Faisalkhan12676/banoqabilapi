@@ -1,6 +1,16 @@
-import {StyleSheet, Text, View, TouchableOpacity, Image,SafeAreaView,Modal,Alert} from 'react-native';
-import React, {useState, useEffect,useRef,useCallback} from 'react';
-import {TextInput, HelperText,ActivityIndicator} from 'react-native-paper';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  SafeAreaView,
+  Modal,
+  Alert,
+  ScrollView,
+} from 'react-native';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
+import {TextInput, HelperText, ActivityIndicator} from 'react-native-paper';
 import {Button} from 'react-native-paper';
 import {Formik, useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -25,8 +35,6 @@ const validation = Yup.object().shape({
     .required('Phone number is required'),
 });
 
-
-
 const Register = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isloading, setIsLoading] = useState(false);
@@ -42,6 +50,7 @@ const Register = () => {
     $recaptcha.current.close();
   }, []);
   //img sourse
+  const imgSourse = require('../assets/logo2.png');
 
   return (
     <>
@@ -60,10 +69,8 @@ const Register = () => {
               const username = values.username.trim();
               const password = values.password.trim();
               const email = values.email.trim();
-               const number = email.slice(1);
-               const number1 = '+92' + number;
-
-             
+              const number = email.slice(1);
+              const number1 = '+92' + number;
 
               // setIsLoading(true);
               await axios
@@ -75,28 +82,28 @@ const Register = () => {
                   role: null,
                 })
                 .then(res => {
-                   //SMS WORK
-                  
+                  //SMS WORK
+
                   axios
-                  .post(
-                    `https://sms.montymobile.com/API/SendBulkSMS`,
-                    {
-                      source: 'Alkhidmat',
-                      destination: [`${number1}`],
-                      text: 'Thank you for registering with Bano Qabil.',
-                    },
-                    {
-                      headers: {
-                        Authorization: 'Basic SW5ub3ZhZG9yOkZjNGhpNWNr',
+                    .post(
+                      `https://sms.montymobile.com/API/SendBulkSMS`,
+                      {
+                        source: 'Alkhidmat',
+                        destination: [`${number1}`],
+                        text: 'Thank you for registering with Bano Qabil.',
                       },
-                    },
-                  )
-                  .then(res => {
-                    console.log('SMS RESPONSE', res);
-                  })
-                  .catch(err => {
-                    console.log(err);
-                  });
+                      {
+                        headers: {
+                          Authorization: 'Basic SW5ub3ZhZG9yOkZjNGhpNWNr',
+                        },
+                      },
+                    )
+                    .then(res => {
+                      console.log('SMS RESPONSE', res);
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
 
                   //SMS WORK
                   setIsLoading(false);
@@ -105,7 +112,7 @@ const Register = () => {
                   try {
                     AsyncStorage.setItem('@userlogininfo', data);
                     console.log('data', data);
-                   
+
                     setModalVisible(true);
                     resetForm();
                   } catch (e) {
@@ -190,103 +197,132 @@ const Register = () => {
                     Register
                   </Button>
                   <Recaptcha
-                          ref={$recaptcha}
-                          lang="en"
-                          headerComponent={
-                            <SafeAreaView>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'flex-end',
-                                  alignItems: 'center',
-                                  paddingVertical: 10,
-                                }}>
-                                <Icon
-                                  name="close"
-                                  size={30}
-                                  style={{marginRight: 10}}
-                                  onPress={handleClosePress}
-                                />
-                              </View>
-                            </SafeAreaView>
+                    ref={$recaptcha}
+                    lang="en"
+                    headerComponent={
+                      <SafeAreaView>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-end',
+                            alignItems: 'center',
+                            paddingVertical: 10,
+                          }}>
+                          <Icon
+                            name="close"
+                            size={30}
+                            style={{marginRight: 10}}
+                            onPress={handleClosePress}
+                          />
+                        </View>
+                      </SafeAreaView>
+                    }
+                    loadingComponent={
+                      <>
+                        <ActivityIndicator color="green" />
+                        <Text style={{color: '#fff'}}>
+                          Loading reCaptcha...
+                        </Text>
+                      </>
+                    }
+                    siteKey="6LfkbEMgAAAAAIkc9Cd-pls5ZspaVywaGQfgG4Dl"
+                    baseUrl="http://127.0.0.1"
+                    size={size}
+                    theme="light"
+                    onError={err => {
+                      alert('SOMETHING WENT WRONG');
+                      // console.warn(err);
+                    }}
+                    onExpire={() => alert('TOKEN EXPIRED')}
+                    onVerify={token => {
+                      axios
+                        .post(`${BASE_URL}/Auth/Recaptcha?token=${token}`)
+                        .then(res => {
+                          if (res.data === true) {
+                            handleSubmit();
+                          } else {
+                            alert('Verification failed');
                           }
-                          loadingComponent={
-                            <>
-                              <ActivityIndicator color="green" />
-                              <Text style={{color: '#fff'}}>
-                                Loading reCaptcha...
-                              </Text>
-                            </>
-                          }
-                          siteKey="6LfkbEMgAAAAAIkc9Cd-pls5ZspaVywaGQfgG4Dl"
-                          baseUrl="http://127.0.0.1"
-                          size={size}
-                          theme="light"
-                          onError={err => {
-                            alert('SOMETHING WENT WRONG');
-                            // console.warn(err);
-                          }}
-                          onExpire={() => alert('TOKEN EXPIRED')}
-                          onVerify={token => {
-                            axios
-                              .post(`${BASE_URL}/Auth/Recaptcha?token=${token}`)
-                              .then(res => {
-                                if (res.data === true) {
-                                  handleSubmit();
-                                } else {
-                                  alert('Verification failed');
-                                }
-                              })
-                              .catch(err => {
-                                console.log(err);
-                              });
-                          
-                          }}
-                        />
-                 
+                        })
+                        .catch(err => {
+                          console.log(err);
+                        });
+                    }}
+                  />
+
                   <TouchableOpacity onPress={() => navigate.navigate('Login')}>
                     <Text style={{textAlign: 'center', color: '#000'}}>
                       Already Have Account?
                     </Text>
                   </TouchableOpacity>
+
+                    <View style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                      <Text style={{
+                        marginRight:10,
+                      }}>A Project Of</Text>
+                      <View style={{
+                        width: 80,
+                        height: 80,
+                      }}>
+                      <Image source={imgSourse} style={{
+                        width: "100%",
+                        height: "100%",
+                        resizeMode: 'contain',
+                      }} />
+                      </View>
+
+                   
+                    </View>
+                      <Text style={{
+                        textAlign: 'center',
+                        color: '#000',
+                        marginBottom:30,
+                      }}>For More Info: <Text style={{
+                        color: 'blue',
+                       
+                      }}>https://banoqabil.pk/</Text></Text>
+                  
                 </View>
-               
               </>
             )}
           </Formik>
         </View>
-      
-     
       </View>
       <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                  Alert.alert('Modal has been closed.');
-                  setModalVisible(!modalVisible);
-                }}>
-                <View style={styles.centeredView}>
-                  <View style={styles.modalView}>
-                    <AlertIcon name='checkmark-circle-outline' size={40} color={color.primary} />
-                    <Text style={styles.modalText}>
-                      You Have Signed Up Successfully.
-                    </Text>
-                   <Button 
-                   color={color.primary}
-                   onPress={() => {
-                      setModalVisible(!modalVisible);
-                      if(modalVisible){
-                        dispatch({type: 'LOGIN'});
-                       
-                      }
-                   }}
-                   >
-                     Ok
-                   </Button>
-                  </View>
-                </View>
-              </Modal>
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <AlertIcon
+              name="checkmark-circle-outline"
+              size={40}
+              color={color.primary}
+            />
+            <Text style={styles.modalText}>
+              You Have Signed Up Successfully.
+            </Text>
+            <Button
+              color={color.primary}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                if (modalVisible) {
+                  dispatch({type: 'LOGIN'});
+                }
+              }}>
+              Ok
+            </Button>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };
@@ -314,56 +350,55 @@ const styles = StyleSheet.create({
   img: {
     width: '50%',
     height: '50%',
+    resizeMode: 'contain',
   },
   logo: {
     width: 300,
-    height: 200,
+    height: 150,
     marginLeft: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  form: {
-    marginBottom: 50,
-  },
+
   centeredView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
   button: {
     borderRadius: 20,
     padding: 10,
-    elevation: 2
+    elevation: 2,
   },
   buttonOpen: {
-    backgroundColor: "#F194FF",
+    backgroundColor: '#F194FF',
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: '#2196F3',
   },
   textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
-  }
+    textAlign: 'center',
+  },
 });

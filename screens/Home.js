@@ -23,12 +23,14 @@ import {useDispatch} from 'react-redux';
 import Info from 'react-native-vector-icons/MaterialIcons';
 import AdmissionForm from './AdmissionForm';
 import CheckBox from '@react-native-community/checkbox';
-import { BASE_URL } from '../config';
+import {BASE_URL} from '../config';
 import axios from 'axios';
+import Header from '../components/Header';
 
 const Home = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const imgSourse = require('../assets/logo2.png');
 
   const handlelogout = () => {
     //remove only login information
@@ -51,7 +53,6 @@ const Home = () => {
         if (value !== null) {
           // We have data!!
           const data = JSON.parse(value);
-          
 
           await axios
             .get(`${BASE_URL}/StudentAdmissionDetail/GetAllCourse`, {
@@ -79,43 +80,14 @@ const Home = () => {
   return (
     <>
       {/* HEADER */}
-      <View style={styles.header}>
-        <View
-          style={{
-            height: 70,
-            width: 150,
-          }}>
-          <Image
-            source={require('../assets/Bano-Qabil-Logo-Green.png')}
-            style={styles.logo}
-          />
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
-          <TouchableOpacity onPress={() => navigation.navigate('details')}>
-            <Info name="person" color={color.primary} size={30} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('admitCard')}>
-            <Info name="info" color={color.primary} size={30} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              marginLeft: 10,
-            }}
-            onPress={handlelogout}>
-            <Logout />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <ScrollView style={{
-        backgroundColor: '#fff',
-        flex: 1,
-      }}>
-        <View style={styles.container}>
+      <Header />
+      <ScrollView
+        style={{
+          backgroundColor: '#fff',
+          flex: 1,
+        }}>
         <Slider />
+        <View style={styles.container}>
           <TouchableOpacity
             activeOpacity={1}
             onPress={() => navigation.navigate('selectedCourses')}>
@@ -187,7 +159,7 @@ const Home = () => {
             activeOpacity={1}
             onPress={() => navigation.navigate('admitCard')}>
             <View style={styles.card}>
-            <Info name="person" size={38} style={styles.clr} />
+              <Info name="person" size={38} style={styles.clr} />
               <View>
                 <Text style={styles.clr}>Admit Card</Text>
               </View>
@@ -195,13 +167,13 @@ const Home = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => navigation.navigate('exam')}>
-          <View style={styles.card}>
-            <Paper name="copy-outline" size={38} style={styles.clr} />
-            <Text style={styles.clr}>Demo Exam</Text>
-          </View>
-        </TouchableOpacity>
+            activeOpacity={1}
+            onPress={() => navigation.navigate('exam')}>
+            <View style={styles.card}>
+              <Paper name="copy-outline" size={38} style={styles.clr} />
+              <Text style={styles.clr}>Demo Exam</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </>
@@ -235,7 +207,7 @@ const styles = StyleSheet.create({
     paddingVertical: 22,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    backgroundColor:'#fff',
+    backgroundColor: '#fff',
     flex: 1,
   },
   card: {

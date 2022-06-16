@@ -19,6 +19,7 @@ import {
   TextInput,
   RadioButton,
   HelperText,
+  Avatar,
 } from 'react-native-paper';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,6 +36,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const ShowStd = () => {
   const navigation = useNavigation();
+  const [imgs, setImgs] = useState('');
   const [token, setToken] = useState('');
   const [visible, setVisible] = React.useState(false);
   const [data, setData] = useState([]);
@@ -53,19 +55,18 @@ const ShowStd = () => {
   const [city, setCity] = useState([]);
   const [id, setId] = useState('');
   const [user, setUser] = useState([]);
-
-
-  
+  const [education, setEducation] = useState([]);
 
   useEffect(() => {
-
-  
-
     const getstudent = async () => {
       const value = await AsyncStorage.getItem('@userlogininfo');
       if (value !== null) {
         const data = JSON.parse(value);
         setToken(data.token);
+
+
+
+
         axios
           .get(`${BASE_URL}/Student/GetByUserIdWithRelationShip`, {
             headers: {
@@ -75,7 +76,7 @@ const ShowStd = () => {
           .then(res => {
             console.log('DATA : ', res.data);
             const {student, user} = res.data;
-            console.log(user.username)
+            console.log(user.username);
             console.log(student.areaId);
             setData(student);
             setId(user.id);
@@ -83,20 +84,39 @@ const ShowStd = () => {
             setUser(user);
 
             axios
-            .get(`${BASE_URL}/Area/GetByCityId?id=${student.cityId}`, {
-              headers: {Authorization: `Bearer ${token}`},
-            })
-            .then(res => {
-              console.log(res.data, 'AREA');
-              setDistrict(res.data);
-            })
-            .catch(err => {
-              console.log(err);
-            });
+              .get(`${BASE_URL}/Area/GetByCityId?id=${student.cityId}`, {
+                headers: {Authorization: `Bearer ${token}`},
+              })
+              .then(res => {
+                console.log(res.data, 'AREA');
+                setDistrict(res.data);
+              })
+              .catch(err => {
+                console.log(err);
+              });
           })
           .catch(err => {
             console.log(err);
           });
+
+
+
+          axios
+          .get(`${BASE_URL}/Student/GetImage`, {
+            headers: {
+              Authorization: `Bearer ${data.token}`,
+            },
+          })
+          .then(res => {
+            console.log('IMAGES');
+            const {image} = res.data;
+            setImgs(image);
+          })
+          .catch(err => {
+            console.log(err);
+            console.log('ERROR');
+          });
+
 
         await axios
           .get(`${BASE_URL}/City/GetAll`, {
@@ -110,15 +130,29 @@ const ShowStd = () => {
             console.log(err);
           });
 
-          
+        await axios
+          .get(
+            `${BASE_URL}/StudentEducation/GetAllByStudentIdWithRelationShip`,
+            {
+              headers: {Authorization: `Bearer ${data.token}`},
+            },
+          )
+          .then(res => {
+            console.log(res.data, 'LINE 117');
+            setEducation(res.data[0]);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+
+
+
       }
     };
 
     getstudent();
     console.log(token);
   }, [visible]);
-
-  
 
   const handleArea = value => {
     console.log(value + 'ID');
@@ -190,15 +224,16 @@ const ShowStd = () => {
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.title}>
-            <Text
-              style={{
-                fontSize: 20,
-              }}>
-              Basic Information
-            </Text>
+          <Avatar.Image size={70} source={{uri: imgs}}  />
 
-            <Button mode="contained" style={styles.button} onPress={showModal}>
+            {/* <Button mode="contained" style={styles.button} onPress={showModal}>
               Edit
+            </Button> */}
+            <Button
+              mode="contained"
+              style={styles.button}
+              onPress={() => navigation.navigate('changepass')}>
+              <Icon name="key" size={20} />
             </Button>
           </View>
           <Divider />
@@ -281,6 +316,11 @@ const ShowStd = () => {
           <View style={styles.div}>
             <Text style={styles.headding}>Enrollment Date</Text>
             <Text style={styles.text}>{data.enrollmentDate}</Text>
+          </View>
+
+          <View style={styles.div}>
+            <Text style={styles.headding}>Education</Text>
+            <Text style={styles.text}>{education.degrees}</Text>
           </View>
           <Divider />
         </View>
@@ -419,7 +459,7 @@ const ShowStd = () => {
                       </Text>
 
                       <TextInput
-                      activeUnderlineColor={color.primary}
+                        activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="fatherName"
@@ -435,7 +475,7 @@ const ShowStd = () => {
                         {touched.fatherName && errors.fatherName}
                       </HelperText>
                       <TextInput
-                      activeUnderlineColor={color.primary}
+                        activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="Father Occupation"
@@ -489,7 +529,7 @@ const ShowStd = () => {
                       </TouchableOpacity>
 
                       <TextInput
-                      activeUnderlineColor={color.primary}
+                        activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20}}
                         mode="flat"
                         placeholder="email"
@@ -635,7 +675,7 @@ const ShowStd = () => {
                       </View>
 
                       <TextInput
-                      activeUnderlineColor={color.primary}
+                        activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="CNIC"
@@ -652,7 +692,7 @@ const ShowStd = () => {
                       </HelperText>
 
                       <TextInput
-                      activeUnderlineColor={color.primary}
+                        activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="Present Address"
@@ -671,7 +711,7 @@ const ShowStd = () => {
                       </HelperText>
 
                       <TextInput
-                      activeUnderlineColor={color.primary}
+                        activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="Whatsapp Number"
@@ -690,7 +730,7 @@ const ShowStd = () => {
                       </HelperText>
 
                       <TextInput
-                      activeUnderlineColor={color.primary}
+                        activeUnderlineColor={color.primary}
                         style={{marginHorizontal: 20, marginVertical: 10}}
                         mode="flat"
                         placeholder="Facebook Account"

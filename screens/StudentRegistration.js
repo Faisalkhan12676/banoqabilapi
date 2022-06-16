@@ -157,38 +157,38 @@ const StudentRegistration = () => {
     getToken();
   }, []);
 
-  const ImageHandle = () => {
-    const options = {
-      title: 'Select Avatar',
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-      mediaType: 'photo',
-      includeBase64: true,
-    };
-    launchImageLibrary(options, response => {
-      // Same code as in above section!
-      // const {base64} = response.assets;
-      //  console.log(base64);
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ');
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ');
-      } else {
-        const {type} = response.assets[0];
-        const typeSplit = type.split('/');
-        const {base64} = response.assets[0];
-        setImgplaceholder('Image Added');
-        setImage(base64);
-        setExt(typeSplit[1]);
-        setIsImg(true);
-        setValidateImg(false);
-      }
-    });
-  };
+  // const ImageHandle = () => {
+  //   const options = {
+  //     title: 'Select Avatar',
+  //     storageOptions: {
+  //       skipBackup: true,
+  //       path: 'images',
+  //     },
+  //     mediaType: 'photo',
+  //     includeBase64: true,
+  //   };
+  //   launchImageLibrary(options, response => {
+  //     // Same code as in above section!
+  //     // const {base64} = response.assets;
+  //     //  console.log(base64);
+  //     if (response.didCancel) {
+  //       console.log('User cancelled image picker');
+  //     } else if (response.error) {
+  //       console.log('ImagePicker Error: ');
+  //     } else if (response.customButton) {
+  //       console.log('User tapped custom button: ');
+  //     } else {
+  //       const {type} = response.assets[0];
+  //       const typeSplit = type.split('/');
+  //       const {base64} = response.assets[0];
+  //       setImgplaceholder('Image Added');
+  //       setImage(base64);
+  //       setExt(typeSplit[1]);
+  //       setIsImg(true);
+  //       setValidateImg(false);
+  //     }
+  //   });
+  // };
 
   const handleArea = value => {
     console.log(value + 'ID');
@@ -245,7 +245,7 @@ const StudentRegistration = () => {
     dob: Yup.string().required('Required'),
     FatherOccupation: Yup.string().required('Required'),
     presentAddress: Yup.string().required('Required'),
-    cityId: Yup.string().required('Required'),
+    cityId: Yup.string().required('Required').nullable(),
     whatsappNumber: Yup.string().required('Required'),
     // otherNumber: Yup.string().required('Required'),
     areaId: Yup.string().required('Required'),
@@ -254,6 +254,8 @@ const StudentRegistration = () => {
     // instagramAccount: Yup.string().required('Required'),
     // email: Yup.string().required('Required'),
     degreeId: Yup.string().required('Required').nullable(),
+    image: Yup.string().required('Required'),
+    // image: Yup.string().required('Required'),
   });
 
   //modify designation array with custom key
@@ -275,230 +277,228 @@ const StudentRegistration = () => {
         </>
       ) : (
         <>
-        <SafeAreaView>
-          <Formik
-            initialValues={{
-              fatherName: '',
-              gender: '',
-              cnic: '',
-              income: '',
-              dob: '',
-              FatherOccupation: '',
-              presentAddress: '',
-              cityId: '',
-              whatsappNumber: '',
-              // otherNumber: '',
-              areaId: '',
-              facebookAccount: '',
-              // linkedinAccount: '',
-              // instagramAccount: '',
-              email: '',
-              degreeId: '',
-            }}
-            validationSchema={validation}
-            onSubmit={async (values, {resetForm}) => {
-              setIsbtn(true);
-              console.log(values);
-              axios
-                .post(
-                  `${BASE_URL}/Student/Add`,
-                  {
-                    fatherName: values.fatherName,
-                    otherNumber: null,
-                    gender: values.gender,
-                    dob: values.dob,
-                    cnic: values.cnic,
-                    fatherOccupation: values.FatherOccupation,
-                    areaId: values.areaId,
-                    presentAddress: values.presentAddress,
-                    userId: 0,
-                    enrollmentDate: today,
-                    cityId: values.cityId,
-                    facebookAccount: values.facebookAccount,
-                    linkedinAccount: values.linkedinAccount,
-                    instagramAccount: values.instagramAccount,
-                    whatsappNumber: values.whatsappNumber,
-                    email: values.email,
-                  },
-                  {
-                    headers: {
-                      Authorization: `Bearer ${token}`,
+          <SafeAreaView>
+            <Formik
+              initialValues={{
+                fatherName: '',
+                gender: '',
+                cnic: '',
+                income: '',
+                dob: '',
+                FatherOccupation: '',
+                presentAddress: '',
+                cityId: '',
+                whatsappNumber: '',
+                // otherNumber: '',
+                areaId: '',
+                facebookAccount: '',
+                // linkedinAccount: '',
+                // instagramAccount: '',
+                email: '',
+                degreeId: '',
+                image: '',
+                ext: '',
+              }}
+              validationSchema={validation}
+              onSubmit={async (values, {resetForm}) => {
+                setIsbtn(true);
+                console.log(values);
+                axios
+                  .post(
+                    `${BASE_URL}/Student/Add`,
+                    {
+                      fatherName: values.fatherName,
+                      otherNumber: null,
+                      gender: values.gender,
+                      dob: values.dob,
+                      cnic: values.cnic,
+                      fatherOccupation: values.FatherOccupation,
+                      areaId: values.areaId,
+                      presentAddress: values.presentAddress,
+                      userId: 0,
+                      enrollmentDate: today,
+                      cityId: values.cityId,
+                      facebookAccount: values.facebookAccount,
+                      linkedinAccount: values.linkedinAccount,
+                      instagramAccount: values.instagramAccount,
+                      whatsappNumber: values.whatsappNumber,
+                      email: values.email,
                     },
-                  },
-                )
-                .then(res => {
-                  if (isImg) {
-                    console.log('DATA POSTED');
-                    navigate.navigate('courses');
-                    setIsbtn(false);
-                    axios
-                      .post(
-                        `${BASE_URL}/Student/AddImage`,
-                        {
-                          image: image,
-                          ext: ext,
-                        },
-                        {
-                          headers: {
-                            Authorization: `Bearer ${token}`,
-                          },
-                        },
-                      )
-                      .then(res => {})
-                      .catch(err => {
-                        console.log(err);
-                      });
-                      axios
-                      .post(
-                        `${BASE_URL}/StudentEducation/Add`,
-                        {
-                          year: null,
-                          schoolCollageUni: null,
-                          degreeId: values.degreeId,
-                          userId: 0,
-                        },
-                        {
-                          headers: {
-                            Authorization: `Bearer ${token}`,
-                          },
-                        },
-                      )
-                      .then(res => {
-                        console.log(res, 'RESPONSE FROM DEGREE');
-                      })
-                      .catch(err => {
-                        console.log(err, 'ERROR FROM DEGREE');
-                      });
-
-
-
-
-
-                    resetForm();
-                  } else {
-                    console.log('ADD IMAGE FIRST');
-                    setValidateImg(true);
-                  }
-
-                  const sendEmail = async () => {
-                    //get token from async storage
-                    const token = await AsyncStorage.getItem('@userlogininfo');
-                    if (token !== null) {
-                      const data = JSON.parse(token);
-                      console.log(data, 'data TOKEN');
-
-                      console.log(token, 'token');
+                    {
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                      },
+                    },
+                  )
+                  .then(res => {
+                    if (isImg) {
+                      console.log('DATA POSTED');
+                      navigate.navigate('courses');
+                      setIsbtn(false);
                       axios
                         .post(
-                          `${BASE_URL}/Student/SendEmail`,
-                          {},
+                          `${BASE_URL}/Student/AddImage`,
+                          {
+                            image: values.image,
+                            ext: values.ext,
+                          },
                           {
                             headers: {
-                              Authorization: `Bearer ${data.token}`,
+                              Authorization: `Bearer ${token}`,
+                            },
+                          },
+                        )
+                        .then(res => {})
+                        .catch(err => {
+                          console.log(err);
+                        });
+                      axios
+                        .post(
+                          `${BASE_URL}/StudentEducation/Add`,
+                          {
+                            year: null,
+                            schoolCollageUni: null,
+                            degreeId: values.degreeId,
+                            userId: 0,
+                          },
+                          {
+                            headers: {
+                              Authorization: `Bearer ${token}`,
                             },
                           },
                         )
                         .then(res => {
-                          console.log('EMAIL SENT');
+                          console.log(res, 'RESPONSE FROM DEGREE');
                         })
                         .catch(err => {
-                          console.log(err, 'EMAIL NOT SENT');
+                          console.log(err, 'ERROR FROM DEGREE');
                         });
+
+                      resetForm();
+                    } else {
+                      console.log('ADD IMAGE FIRST');
+                      setValidateImg(true);
                     }
-                  };
-                  sendEmail();
-                })
-                .catch(err => {
-                  console.log(err.response);
-                });
 
-             
-            }}>
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              touched,
-              resetForm,
-              setFieldValue,
-            }) => (
-              <>
-                <View
-                  style={{
-                    width: '100%',
-                    marginVertical: 20,
-                    alignItems: 'center',
-                  }}>
-                  <ScrollView style={{width: '90%'}}>
-                    <TextInput
-                      style={{marginHorizontal: 20, marginVertical: 10}}
-                      mode="flat"
-                      placeholder="Father Name/Guardian Name"
-                      name="fatherName"
-                      onChangeText={handleChange('fatherName')}
-                      value={values.fatherName}
-                      onBlur={handleBlur('fatherName')}
-                      activeUnderlineColor={color.primary}
-                    />
-                    <HelperText
-                      type="error"
-                      style={{marginHorizontal: 20}}
-                      visible={touched.fatherName && errors.fatherName}>
-                      {touched.fatherName && errors.fatherName}
-                    </HelperText>
+                    const sendEmail = async () => {
+                      //get token from async storage
+                      const token = await AsyncStorage.getItem(
+                        '@userlogininfo',
+                      );
+                      if (token !== null) {
+                        const data = JSON.parse(token);
+                        console.log(data, 'data TOKEN');
 
-                    <TextInput
-                      style={{marginHorizontal: 20, marginVertical: 10}}
-                      mode="flat"
-                      placeholder="Father Occupation"
-                      name="FatherOccupation"
-                      onChangeText={handleChange('FatherOccupation')}
-                      value={values.FatherOccupation}
-                      onBlur={handleBlur('FatherOccupation')}
-                      activeUnderlineColor={color.primary}
-                    />
-                    <HelperText
-                      type="error"
-                      style={{marginHorizontal: 20}}
-                      visible={
-                        touched.FatherOccupation && errors.FatherOccupation
-                      }>
-                      {touched.FatherOccupation && errors.FatherOccupation}
-                    </HelperText>
-
-                    <View
-                      style={{
-                        marginVertical: 20,
-                      }}>
-                      <Text
-                        style={{
-                          marginHorizontal: 20,
-                          fontSize: 18,
-                          color: '#000',
-                        }}>
-                        Education/Qualification
-                      </Text>
-                      <RNPickerSelect
-                        placeholder={{
-                          label: 'Education Level',
-                          value: null,
-                        }}
-                        items={designationArray}
-                        onValueChange={value => {
-                          setFieldValue('degreeId', value);
-                        }}
-                        value={values.degreeId}
+                        console.log(token, 'token');
+                        axios
+                          .post(
+                            `${BASE_URL}/Student/SendEmail`,
+                            {},
+                            {
+                              headers: {
+                                Authorization: `Bearer ${data.token}`,
+                              },
+                            },
+                          )
+                          .then(res => {
+                            console.log('EMAIL SENT');
+                          })
+                          .catch(err => {
+                            console.log(err, 'EMAIL NOT SENT');
+                          });
+                      }
+                    };
+                    sendEmail();
+                  })
+                  .catch(err => {
+                    console.log(err.response);
+                  });
+              }}>
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                touched,
+                resetForm,
+                setFieldValue,
+              }) => (
+                <>
+                  <View
+                    style={{
+                      width: '100%',
+                      marginVertical: 20,
+                      alignItems: 'center',
+                    }}>
+                    <ScrollView style={{width: '90%'}}>
+                      <TextInput
+                        style={{marginHorizontal: 20, marginVertical: 10}}
+                        mode="flat"
+                        placeholder="Father Name/Guardian Name"
+                        name="fatherName"
+                        onChangeText={handleChange('fatherName')}
+                        value={values.fatherName}
+                        onBlur={handleBlur('fatherName')}
+                        activeUnderlineColor={color.primary}
                       />
                       <HelperText
                         type="error"
-                        visible={touched.degreeId && errors.degreeId}>
-                        {errors.degreeId}
+                        style={{marginHorizontal: 20}}
+                        visible={touched.fatherName && errors.fatherName}>
+                        {touched.fatherName && errors.fatherName}
                       </HelperText>
-                    </View>
 
-                    {/* <TextInput
+                      <TextInput
+                        style={{marginHorizontal: 20, marginVertical: 10}}
+                        mode="flat"
+                        placeholder="Father Occupation"
+                        name="FatherOccupation"
+                        onChangeText={handleChange('FatherOccupation')}
+                        value={values.FatherOccupation}
+                        onBlur={handleBlur('FatherOccupation')}
+                        activeUnderlineColor={color.primary}
+                      />
+                      <HelperText
+                        type="error"
+                        style={{marginHorizontal: 20}}
+                        visible={
+                          touched.FatherOccupation && errors.FatherOccupation
+                        }>
+                        {touched.FatherOccupation && errors.FatherOccupation}
+                      </HelperText>
+
+                      <View
+                        style={{
+                          marginVertical: 20,
+                        }}>
+                        <Text
+                          style={{
+                            marginHorizontal: 20,
+                            fontSize: 18,
+                            color: '#000',
+                          }}>
+                          Education/Qualification
+                        </Text>
+                        <RNPickerSelect
+                          placeholder={{
+                            label: 'Education Level',
+                            value: null,
+                          }}
+                          items={designationArray}
+                          onValueChange={value => {
+                            setFieldValue('degreeId', value);
+                          }}
+                          value={values.degreeId}
+                        />
+                        <HelperText
+                          type="error"
+                          visible={touched.degreeId && errors.degreeId}>
+                          {errors.degreeId}
+                        </HelperText>
+                      </View>
+
+                      {/* <TextInput
                       style={{marginHorizontal: 20, marginVertical: 10}}
                       mode="flat"
                       placeholder="Second Number"
@@ -514,263 +514,304 @@ const StudentRegistration = () => {
                       visible={touched.otherNumber && errors.otherNumber}>
                       {touched.otherNumber && errors.otherNumber}
                     </HelperText> */}
-                    <TextInput
-                      style={{marginHorizontal: 20, marginVertical: 10}}
-                      mode="flat"
-                      placeholder="Whatsapp Number"
-                      name="whatsappNumber"
-                      onChangeText={handleChange('whatsappNumber')}
-                      value={values.whatsappNumber}
-                      onBlur={handleBlur('whatsappNumber')}
-                      activeUnderlineColor={color.primary}
-                    />
-                    <HelperText
-                      type="error"
-                      style={{marginHorizontal: 20}}
-                      visible={touched.whatsappNumber && errors.whatsappNumber}>
-                      {touched.whatsappNumber && errors.whatsappNumber}
-                    </HelperText>
-
-                    <TextInput
-                      style={{marginHorizontal: 20, marginVertical: 10}}
-                      mode="flat"
-                      placeholder="Email"
-                      name="email"
-                      onChangeText={handleChange('email')}
-                      value={values.email}
-                      onBlur={handleBlur('email')}
-                      activeUnderlineColor={color.primary}
-                    />
-                    <HelperText
-                      type="error"
-                      style={{marginHorizontal: 20}}
-                      visible={touched.email && errors.email}>
-                      {touched.email && errors.email}
-                    </HelperText>
-
-                    <RadioButton.Group
-                      onValueChange={handleChange('gender')}
-                      value={values.gender}>
-                      <RadioButton.Item
-                        color={color.primary}
-                        style={{marginHorizontal: 20}}
-                        label="Male"
-                        value="Male"
+                      <TextInput
+                        style={{marginHorizontal: 20, marginVertical: 10}}
+                        mode="flat"
+                        placeholder="Whatsapp Number"
+                        name="whatsappNumber"
+                        onChangeText={handleChange('whatsappNumber')}
+                        value={values.whatsappNumber}
+                        onBlur={handleBlur('whatsappNumber')}
+                        activeUnderlineColor={color.primary}
                       />
-                      <RadioButton.Item
-                        color={color.primary}
+                      <HelperText
+                        type="error"
                         style={{marginHorizontal: 20}}
-                        label="Female"
-                        value="Female"
-                      />
-                    </RadioButton.Group>
-                    <HelperText
-                      type="error"
-                      style={{marginHorizontal: 20}}
-                      visible={touched.gender && errors.gender}>
-                      {touched.gender && errors.gender}
-                    </HelperText>
+                        visible={
+                          touched.whatsappNumber && errors.whatsappNumber
+                        }>
+                        {touched.whatsappNumber && errors.whatsappNumber}
+                      </HelperText>
 
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        marginHorizontal: 25,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
-                      <Text
-                        style={{marginRight: 100, color: '#000', fontSize: 15}}>
-                        Date of Birth
-                      </Text>
-                      <TouchableOpacity onPress={() => setOpen(true)}>
-                        <TextInput
-                          style={{width: '100%'}}
-                          value={values.dob}
-                          onBlur={handleBlur('dob')}
-                          disabled={true}
-                          placeholder="Date of Birth"
+                      <TextInput
+                        style={{marginHorizontal: 20, marginVertical: 10}}
+                        mode="flat"
+                        placeholder="Email"
+                        name="email"
+                        onChangeText={handleChange('email')}
+                        value={values.email}
+                        onBlur={handleBlur('email')}
+                        activeUnderlineColor={color.primary}
+                      />
+                      <HelperText
+                        type="error"
+                        style={{marginHorizontal: 20}}
+                        visible={touched.email && errors.email}>
+                        {touched.email && errors.email}
+                      </HelperText>
+
+                      <RadioButton.Group
+                        onValueChange={handleChange('gender')}
+                        value={values.gender}>
+                        <RadioButton.Item
+                          color={color.primary}
+                          style={{marginHorizontal: 20}}
+                          label="Male"
+                          value="Male"
                         />
-                      </TouchableOpacity>
-                    </View>
-                    <HelperText
-                      type="error"
-                      style={{marginHorizontal: 20}}
-                      visible={touched.dob && errors.dob}>
-                      {touched.dob && errors.dob}
-                    </HelperText>
+                        <RadioButton.Item
+                          color={color.primary}
+                          style={{marginHorizontal: 20}}
+                          label="Female"
+                          value="Female"
+                        />
+                      </RadioButton.Group>
+                      <HelperText
+                        type="error"
+                        style={{marginHorizontal: 20}}
+                        visible={touched.gender && errors.gender}>
+                        {touched.gender && errors.gender}
+                      </HelperText>
 
-                    <DatePicker
-                      modal
-                      open={open}
-                      date={date}
-                      onConfirm={date => {
-                        setOpen(false);
-                        const dateString = date.toLocaleDateString();
-
-                        setFieldValue('dob', dateString);
-                      }}
-                      mode="date"
-                      onDateChange={date => {
-                        setDate(date);
-                        //date in string format
-                        const dateString = date.toLocaleDateString();
-
-                        setFieldValue('dob', dateString);
-                      }}
-                      onCancel={() => {
-                        setOpen(false);
-                      }}
-                    />
-
-                    <TouchableOpacity onPress={ImageHandle}>
                       <View
                         style={{
-                          height: 50,
-                          marginHorizontal: 20,
-                          marginVertical: 10,
-                          backgroundColor: '#eee',
+                          flexDirection: 'row',
+                          marginHorizontal: 25,
                           justifyContent: 'center',
                           alignItems: 'center',
-                          borderRadius: 4,
-                          borderColor: validateImg ? 'red' : '#eee',
-                          borderWidth: validateImg ? 2 : 0,
                         }}>
                         <Text
                           style={{
+                            marginRight: 100,
+                            color: '#000',
                             fontSize: 15,
-                            color: validateImg ? 'red' : '#000',
                           }}>
-                          {imgplaceholder}
+                          Date of Birth
                         </Text>
+                        <TouchableOpacity onPress={() => setOpen(true)}>
+                          <TextInput
+                            style={{width: '100%'}}
+                            value={values.dob}
+                            onBlur={handleBlur('dob')}
+                            disabled={true}
+                            placeholder="Date of Birth"
+                          />
+                        </TouchableOpacity>
                       </View>
-                    </TouchableOpacity>
-                    <View>
-                      <Text
-                        style={{
-                          marginHorizontal: 20,
-                          fontSize: 18,
-                          color: '#000',
+                      <HelperText
+                        type="error"
+                        style={{marginHorizontal: 20}}
+                        visible={touched.dob && errors.dob}>
+                        {touched.dob && errors.dob}
+                      </HelperText>
+
+                      <DatePicker
+                        modal
+                        open={open}
+                        date={date}
+                        //max date 2012-12-31
+                        maximumDate={new Date(new Date('2012-12-31'))}
+                        minimumDate={new Date(new Date('1940-01-01'))}
+                        onConfirm={date => {
+                          setOpen(false);
+                          const dateString = date.toLocaleDateString();
+
+                          setFieldValue('dob', dateString);
+                        }}
+                        mode="date"
+                        onDateChange={date => {
+                          setDate(date);
+                          //date in string format
+                          const dateString = date.toLocaleDateString();
+
+                          setFieldValue('dob', dateString);
+                        }}
+                        onCancel={() => {
+                          setOpen(false);
+                        }}
+                      />
+
+                      <TouchableOpacity
+                        onPress={() => {
+                          const options = {
+                            title: 'Select Avatar',
+                            storageOptions: {
+                              skipBackup: true,
+                              path: 'images',
+                            },
+                            mediaType: 'photo',
+                            includeBase64: true,
+                          };
+                          launchImageLibrary(options, response => {
+                            // Same code as in above section!
+                            // const {base64} = response.assets;
+                            //  console.log(base64);
+                            if (response.didCancel) {
+                              console.log('User cancelled image picker');
+                            } else if (response.error) {
+                              console.log('ImagePicker Error: ');
+                            } else if (response.customButton) {
+                              console.log('User tapped custom button: ');
+                            } else {
+                              const {type} = response.assets[0];
+                              const typeSplit = type.split('/');
+                              const {base64} = response.assets[0];
+                              setImgplaceholder('Image Added');
+                              setImage(base64);
+                              setFieldValue('image', base64);
+                              setExt(typeSplit[1]);
+                              setFieldValue('ext', typeSplit[1]);
+                              setIsImg(true);
+                              setValidateImg(false);
+                            }
+                          });
                         }}>
-                        City
-                      </Text>
-                      <RNPickerSelect
-                        onValueChange={(value, index) => {
-                          setFieldValue('cityId', value);
-                          handleArea(value);
+                        <View
+                          style={{
+                            height: 50,
+                            marginHorizontal: 20,
+                            marginVertical: 10,
+                            backgroundColor: '#eee',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: 4,
+                          }}>
+                          <Text>{imgplaceholder}</Text>
+                        </View>
+                      </TouchableOpacity>
+                      <HelperText
+                        type="error"
+                        style={{marginHorizontal: 20}}
+                        visible={touched.image && errors.image}>
+                        {touched.image && errors.image}
+                      </HelperText>
+                      <View>
+                        <Text
+                          style={{
+                            marginHorizontal: 20,
+                            fontSize: 18,
+                            color: '#000',
+                          }}>
+                          City
+                        </Text>
+                        <RNPickerSelect
+                          onValueChange={(value, index) => {
+                            setFieldValue('cityId', value);
+                            handleArea(value);
+                          }}
+                          placeholder={{
+                            label: 'Select City',
+                            value: null,
+                          }}
+                          items={cityarr}
+                          value={values.cityId}
+                        />
+                        <HelperText
+                          type="error"
+                          style={{marginHorizontal: 20}}
+                          visible={touched.cityId && errors.cityId}>
+                          {touched.cityId && errors.cityId}
+                        </HelperText>
+                      </View>
+
+                      <View>
+                        <Text
+                          style={{
+                            marginHorizontal: 20,
+                            fontSize: 18,
+                            color: '#000',
+                          }}>
+                          Area
+                          {loadArea ? (
+                            <>
+                              {/* <ActivityIndicator size={20} color={color.primary} /> */}
+                            </>
+                          ) : (
+                            ''
+                          )}
+                        </Text>
+                        <RNPickerSelect
+                          onValueChange={(value, index) => {
+                            setFieldValue('areaId', value);
+                          }}
+                          placeholder={{
+                            label: 'Select Area',
+                            value: null,
+                          }}
+                          items={areaarr}
+                          value={values.areaId}
+                          disabled={loadArea}
+                        />
+                        <HelperText
+                          type="error"
+                          style={{marginHorizontal: 20}}
+                          visible={touched.areaId && errors.areaId}>
+                          {touched.areaId && errors.areaId}
+                        </HelperText>
+                      </View>
+
+                      <TextInput
+                        style={{marginHorizontal: 20, marginVertical: 10}}
+                        mode="flat"
+                        placeholder="CNIC (optional)"
+                        name="cnic"
+                        onChangeText={value => {
+                          //in cnic add - automtic
+                          const cnic = value
+                            .replace(/\D/g, '')
+                            .replace(/(\d{5})(\d{7})(\d{1})/, '$1-$2-$3');
+                          setFieldValue('cnic', cnic);
                         }}
-                        placeholder={{
-                          label: 'Select City',
-                          value: null,
-                        }}
-                        items={cityarr}
-                        value={values.cityId}
+                        value={values.cnic}
+                        onBlur={handleBlur('cnic')}
+                        activeUnderlineColor={color.primary}
                       />
                       <HelperText
                         type="error"
                         style={{marginHorizontal: 20}}
-                        visible={touched.cityId && errors.cityId}>
-                        {touched.cityId && errors.cityId}
+                        visible={touched.cnic && errors.cnic}>
+                        {touched.cnic && errors.cnic}
                       </HelperText>
-                    </View>
 
-                    <View>
-                      <Text
-                        style={{
-                          marginHorizontal: 20,
-                          fontSize: 18,
-                          color: '#000',
-                        }}>
-                        Area
-                        {loadArea ? (
-                          <>
-                            {/* <ActivityIndicator size={20} color={color.primary} /> */}
-                          </>
-                        ) : (
-                          ''
-                        )}
-                      </Text>
-                      <RNPickerSelect
-                        onValueChange={(value, index) => {
-                          setFieldValue('areaId', value);
-                        }}
-                        placeholder={{
-                          label: 'Select Area',
-                          value: null,
-                        }}
-                        items={areaarr}
-                        value={values.areaId}
-                        disabled={loadArea}
+                      <TextInput
+                        style={{marginHorizontal: 20, marginVertical: 10}}
+                        mode="flat"
+                        placeholder="Postal Address"
+                        name="presentAddress"
+                        onChangeText={handleChange('presentAddress')}
+                        value={values.presentAddress}
+                        onBlur={handleBlur('presentAddress')}
+                        activeUnderlineColor={color.primary}
                       />
                       <HelperText
                         type="error"
                         style={{marginHorizontal: 20}}
-                        visible={touched.areaId && errors.areaId}>
-                        {touched.areaId && errors.areaId}
+                        visible={
+                          touched.presentAddress && errors.presentAddress
+                        }>
+                        {touched.presentAddress && errors.presentAddress}
                       </HelperText>
-                    </View>
 
-                   
+                      <TextInput
+                        style={styles.input}
+                        mode="flat"
+                        placeholder="Facebook Account"
+                        name="facebookAccount"
+                        onChangeText={handleChange('facebookAccount')}
+                        value={values.facebookAccount}
+                        onBlur={handleBlur('facebookAccount')}
+                        activeUnderlineColor={color.primary}
+                      />
+                      <HelperText
+                        type="error"
+                        style={{marginHorizontal: 20}}
+                        visible={
+                          touched.facebookAccount && errors.facebookAccount
+                        }>
+                        {touched.facebookAccount && errors.facebookAccount}
+                      </HelperText>
 
-                    <TextInput
-                      style={{marginHorizontal: 20, marginVertical: 10}}
-                      mode="flat"
-                      placeholder="CNIC (optional)"
-                      name="cnic"
-                      onChangeText={value => {
-                        //in cnic add - automtic
-                        const cnic = value
-                          .replace(/\D/g, '')
-                          .replace(/(\d{5})(\d{7})(\d{1})/, '$1-$2-$3');
-                        setFieldValue('cnic', cnic);
-                      }}
-                      value={values.cnic}
-                      onBlur={handleBlur('cnic')}
-                      activeUnderlineColor={color.primary}
-                    />
-                    <HelperText
-                      type="error"
-                      style={{marginHorizontal: 20}}
-                      visible={touched.cnic && errors.cnic}>
-                      {touched.cnic && errors.cnic}
-                    </HelperText>
-
-                    <TextInput
-                      style={{marginHorizontal: 20, marginVertical: 10}}
-                      mode="flat"
-                      placeholder="Postal Address"
-                      name="presentAddress"
-                      onChangeText={handleChange('presentAddress')}
-                      value={values.presentAddress}
-                      onBlur={handleBlur('presentAddress')}
-                      activeUnderlineColor={color.primary}
-                    />
-                    <HelperText
-                      type="error"
-                      style={{marginHorizontal: 20}}
-                      visible={touched.presentAddress && errors.presentAddress}>
-                      {touched.presentAddress && errors.presentAddress}
-                    </HelperText>
-
-                    <TextInput
-                      style={styles.input}
-                      mode="flat"
-                      placeholder="Facebook Account"
-                      name="facebookAccount"
-                      onChangeText={handleChange('facebookAccount')}
-                      value={values.facebookAccount}
-                      onBlur={handleBlur('facebookAccount')}
-                      activeUnderlineColor={color.primary}
-                    />
-                    <HelperText
-                      type="error"
-                      style={{marginHorizontal: 20}}
-                      visible={
-                        touched.facebookAccount && errors.facebookAccount
-                      }>
-                      {touched.facebookAccount && errors.facebookAccount}
-                    </HelperText>
-
-                    {/* <TextInput
+                      {/* <TextInput
                       style={{marginHorizontal: 20, marginVertical: 10}}
                       mode="flat"
                       placeholder="Instagram Account"
@@ -788,7 +829,7 @@ const StudentRegistration = () => {
                       {touched.instagramAccount && errors.instagramAccount}
                     </HelperText> */}
 
-                    {/* <TextInput
+                      {/* <TextInput
                       style={{marginHorizontal: 20, marginVertical: 10}}
                       mode="flat"
                       placeholder="LinkedIn Account"
@@ -806,35 +847,35 @@ const StudentRegistration = () => {
                       {touched.linkedinAccount && errors.linkedinAccount}
                     </HelperText> */}
 
-                    <View>
-                      <Button
-                        loading={isbtn}
-                        disabled={isbtn}
-                        mode="contained"
-                        style={{
-                          backgroundColor: color.primary,
-                          marginHorizontal: 10,
-                          marginVertical: 15,
-                        }}
-                        onPress={handleSubmit}>
-                        Submit
-                      </Button>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'center',
-                        }}>
+                      <View>
                         <Button
-                          mode="text"
-                          color={color.primary}
+                          loading={isbtn}
+                          disabled={isbtn}
+                          mode="contained"
                           style={{
+                            backgroundColor: color.primary,
                             marginHorizontal: 10,
                             marginVertical: 15,
                           }}
-                          onPress={resetForm}>
-                          Clear
+                          onPress={handleSubmit}>
+                          Submit
                         </Button>
-                        {/* <Recaptcha
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                          }}>
+                          <Button
+                            mode="text"
+                            color={color.primary}
+                            style={{
+                              marginHorizontal: 10,
+                              marginVertical: 15,
+                            }}
+                            onPress={resetForm}>
+                            Clear
+                          </Button>
+                          {/* <Recaptcha
                           ref={$recaptcha}
                           lang="en"
                           headerComponent={
@@ -890,7 +931,7 @@ const StudentRegistration = () => {
                           }}
                         /> */}
 
-                        {/* <Button
+                          {/* <Button
                         mode='text'
                         color={color.primary}
                         style={{
@@ -900,13 +941,13 @@ const StudentRegistration = () => {
                         onPress={skipHandle}>
                         Skip
                       </Button> */}
+                        </View>
                       </View>
-                    </View>
-                  </ScrollView>
-                </View>
-              </>
-            )}
-          </Formik>
+                    </ScrollView>
+                  </View>
+                </>
+              )}
+            </Formik>
           </SafeAreaView>
         </>
       )}
@@ -970,4 +1011,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-

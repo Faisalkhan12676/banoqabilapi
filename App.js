@@ -24,6 +24,8 @@ import Fyp from './components/Fyp';
 import ForgetScreen from './screens/ForgetScreen';
 import NewPassowrd from './screens/NewPassowrd';
 import SelectedCourses from './components/SelectedCourses';
+import ChangePassword from './screens/ChangePassword';
+
 
 
 const stack = createNativeStackNavigator();
@@ -82,6 +84,7 @@ const App = () => {
                   <stack.Screen name="fyp" component={Fyp} />
                   <stack.Screen name="shortfilms" component={ShortFilms} />
                   <stack.Screen name="selectedCourses" component={SelectedCourses} />
+                  <stack.Screen name="changepass" component={ChangePassword} />
                 </>
               )}
             </>
