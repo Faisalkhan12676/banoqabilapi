@@ -588,7 +588,7 @@ const StudentRegistration = () => {
                           }}>
                           Date of Birth
                         </Text>
-                        <TouchableOpacity onPress={() => setOpen(true)}>
+                        {/* <TouchableOpacity onPress={() => setOpen(true)}>
                           <TextInput
                             style={{width: '100%'}}
                             value={values.dob}
@@ -596,7 +596,12 @@ const StudentRegistration = () => {
                             disabled={true}
                             placeholder="Date of Birth"
                           />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
+                        <Button onPress={() => setOpen(true)} color="#000">
+                          {
+                            values.dob === "" ? "mm/dd/yyyy" : values.dob
+                          }
+                        </Button>
                       </View>
                       <HelperText
                         type="error"
