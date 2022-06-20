@@ -15,6 +15,7 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const ExamScreen = () => {
   const navigation = useNavigation();
@@ -390,149 +391,146 @@ const ExamScreen = () => {
               </>
             )} */}
 
-      <View
-        style={{
-          height: 70,
-          width: '100%',
-          backgroundColor: color.primary,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-
-          <Text style={{
-            fontSize: 20,
-            color: color.light,
-          }}>DEMO EXAM</Text>
-        </View>
-
-      <View
-        style={{
-          flex: 1,
-        }}>
-        {state[currentQuestion].questionType === 'Checkbox' ? (
-          <>
-            <Card
-              style={{
-                margin: 10,
-              }}>
-              <Card.Content>
-                <Title>{state[currentQuestion].question}</Title>
-                {state[currentQuestion].options.map((item, i) => {
-                  return (
-                    <>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          marginLeft: 15,
-                          marginVertical: 5,
-                        }}>
-                        <CheckBox
-                          value={item.isChecked}
-                          onValueChange={() => {
-                            item.isChecked = !item.isChecked;
-                            setState([...state]);
-                          }}
-                        />
-                        <Paragraph>{item.option1}</Paragraph>
-                      </View>
-                    </>
-                  );
-                })}
-              </Card.Content>
-            </Card>
-          </>
-        ) : (
-          <>
-            <Card
-              style={{
-                margin: 10,
-              }}>
-              <Card.Content>
-                <Title>{state[currentQuestion].question}</Title>
-
-                {state[currentQuestion].options.map((item, i) => {
-                  return (
-                    <RadioButton.Group
-                      onValueChange={e => {
-                        //if option1 is checked then set all other options to false
-                        if (e === item.option1) {
-                          state[currentQuestion].options.map((item, i) => {
-                            item.isChecked = false;
-                          });
-                          item.isChecked = true;
-                          setState([...state]);
-                        }
-                      }}>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <RadioButton.Item
-                          value={item.option1}
-                          status={item.isChecked ? 'checked' : 'unchecked'}
-                        />
-                        <Paragraph>{item.option1}</Paragraph>
-                      </View>
-                    </RadioButton.Group>
-                  );
-                })}
-              </Card.Content>
-            </Card>
-          </>
-        )}
-
+      <SafeAreaView>
         <View
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginVertical: 10,
-            paddingHorizontal: 10,
+            height: 70,
+            width: '100%',
+            backgroundColor: color.primary,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
-          <Button
-            color={color.primary}
-            disabled={currentQuestion === 0 ? true : false}
-            onPress={() => {
-              setCurrentQuestion(currentQuestion - 1);
+          <Text
+            style={{
+              fontSize: 20,
+              color: color.light,
             }}>
-            BACK
-          </Button>
-          {currentQuestion === state.length - 1 ? (
+            DEMO EXAM
+          </Text>
+        </View>
+
+        <View style={{}}>
+          {state[currentQuestion].questionType === 'Checkbox' ? (
             <>
-             <Button
-          
-            mode="contained"
-            color={color.primary}
-            onPress={() => {
-              //show Alert
-              Alert.alert(
-                'Bano Qabil',
-                'Your Exam Has Been Finished',
-                [
-                  
-                  {text: 'OK', onPress: () => console.log('OK Pressed')},
-                ],
-                {cancelable: false},
-              );
-              
-              navigation.navigate('TabNavigator');
-            }}>
-            Finish
-          </Button>
+              <Card
+                style={{
+                  margin: 10,
+                }}>
+                <Card.Content>
+                  <Title>{state[currentQuestion].question}</Title>
+                  {state[currentQuestion].options.map((item, i) => {
+                    return (
+                      <>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginLeft: 15,
+                            marginVertical: 5,
+                          }}>
+                          <CheckBox
+                            value={item.isChecked}
+                            onValueChange={() => {
+                              item.isChecked = !item.isChecked;
+                              setState([...state]);
+                            }}
+                          />
+                          <Paragraph>{item.option1}</Paragraph>
+                        </View>
+                      </>
+                    );
+                  })}
+                </Card.Content>
+              </Card>
             </>
           ) : (
             <>
-              <Button
-                disabled={currentQuestion === state.length - 1 ? true : false}
-                mode="contained"
-                color={color.primary}
-                onPress={() => {
-                  setCurrentQuestion(currentQuestion + 1);
+              <Card
+                style={{
+                  margin: 10,
                 }}>
-                NEXT
-              </Button>
+                <Card.Content>
+                  <Title>{state[currentQuestion].question}</Title>
+
+                  {state[currentQuestion].options.map((item, i) => {
+                    return (
+                      <RadioButton.Group
+                        onValueChange={e => {
+                          //if option1 is checked then set all other options to false
+                          if (e === item.option1) {
+                            state[currentQuestion].options.map((item, i) => {
+                              item.isChecked = false;
+                            });
+                            item.isChecked = true;
+                            setState([...state]);
+                          }
+                        }}>
+                        <View
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <RadioButton.Item
+                            value={item.option1}
+                            status={item.isChecked ? 'checked' : 'unchecked'}
+                          />
+                          <Paragraph>{item.option1}</Paragraph>
+                        </View>
+                      </RadioButton.Group>
+                    );
+                  })}
+                </Card.Content>
+              </Card>
             </>
           )}
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginVertical: 10,
+              paddingHorizontal: 10,
+            }}>
+            <Button
+              color={color.primary}
+              disabled={currentQuestion === 0 ? true : false}
+              onPress={() => {
+                setCurrentQuestion(currentQuestion - 1);
+              }}>
+              BACK
+            </Button>
+            {currentQuestion === state.length - 1 ? (
+              <>
+                <Button
+                  mode="contained"
+                  color={color.primary}
+                  onPress={() => {
+                    //show Alert
+                    Alert.alert(
+                      'Bano Qabil',
+                      'Your Exam Has Been Finished',
+                      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+                      {cancelable: false},
+                    );
+
+                    navigation.navigate('TabNavigator');
+                  }}>
+                  Finish
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  disabled={currentQuestion === state.length - 1 ? true : false}
+                  mode="contained"
+                  color={color.primary}
+                  onPress={() => {
+                    setCurrentQuestion(currentQuestion + 1);
+                  }}>
+                  NEXT
+                </Button>
+              </>
+            )}
+          </View>
         </View>
-      </View>
+      </SafeAreaView>
 
       {/*       
 

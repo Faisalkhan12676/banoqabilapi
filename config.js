@@ -1,6 +1,6 @@
 
 
-export const BASE_URL = 'http://192.168.1.136:6938/api';
+export const BASE_URL = 'https://banoqabilapi.azurewebsites.net/api';
 
 //https://192.168.8.105:7134/
 //http://192.168.0.110:5134/api

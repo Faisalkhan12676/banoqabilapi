@@ -8,7 +8,6 @@ import {useNavigation, StackActions} from '@react-navigation/native';
 import axios from 'axios';
 import {BASE_URL} from '../config';
 
-
 const ForgetScreen = () => {
   const [disbleText, setDisbleText] = useState(false);
   const [code, setCode] = useState('');
@@ -25,7 +24,7 @@ const ForgetScreen = () => {
         otp: parseInt(code),
       })
       .then(res => {
-        console.log(res.data,"OTP RESPONSE");
+        console.log(res.data, 'OTP RESPONSE');
         //replace screen with payload
         if (res.data === true) {
           navigation.dispatch(
@@ -33,10 +32,10 @@ const ForgetScreen = () => {
               username: username,
             }),
           );
-        }else if(res.data === false){
+        } else if (res.data === false) {
           //Show Alert that code is wrong
           Alert.alert('Wrong Code', 'Please try again', [{text: 'OK'}]);
-          console.log(res,"FROM ELSE IF")
+          console.log(res, 'FROM ELSE IF');
         }
       })
       .catch(err => {
@@ -76,10 +75,12 @@ const ForgetScreen = () => {
               }
             })
             .catch(err => {
-              console.log(err.response);
-              setUsernameErr(err.response.data);
-              setDisbleText(false);
-              setIsLoading(false);
+              if (err.response.status === 500) {
+                console.log(err.response);
+                setUsernameErr(err.response.data);
+                setDisbleText(false);
+                setIsLoading(false);
+              }
             });
         }}
         validationSchema={Yup.object().shape({

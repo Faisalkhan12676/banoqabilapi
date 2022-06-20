@@ -33,6 +33,7 @@ import DatePicker from 'react-native-date-picker';
 import RNPickerSelect from 'react-native-picker-select';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ShowStd = () => {
   const navigation = useNavigation();
@@ -221,6 +222,7 @@ const ShowStd = () => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <>
+    <SafeAreaView>
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.title}>
@@ -802,6 +804,7 @@ const ShowStd = () => {
           </Modal>
         </Portal>
       </Provider>
+      </SafeAreaView>
     </>
   );
 };
