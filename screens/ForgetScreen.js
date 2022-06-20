@@ -25,7 +25,7 @@ const ForgetScreen = () => {
         otp: parseInt(code),
       })
       .then(res => {
-        console.log(res);
+        console.log(res.data,"OTP RESPONSE");
         //replace screen with payload
         if (res.data === true) {
           navigation.dispatch(
@@ -36,6 +36,7 @@ const ForgetScreen = () => {
         }else if(res.data === false){
           //Show Alert that code is wrong
           Alert.alert('Wrong Code', 'Please try again', [{text: 'OK'}]);
+          console.log(res,"FROM ELSE IF")
         }
       })
       .catch(err => {
@@ -75,7 +76,7 @@ const ForgetScreen = () => {
               }
             })
             .catch(err => {
-              console.log(err.response.data);
+              console.log(err.response);
               setUsernameErr(err.response.data);
               setDisbleText(false);
               setIsLoading(false);

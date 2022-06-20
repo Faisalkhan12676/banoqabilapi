@@ -233,8 +233,8 @@ const StudentRegistration = () => {
     fatherName: Yup.string()
       .min(3, 'Too Short!')
       .max(50, 'Too Long!')
-      .required('Required'),
-    gender: Yup.string().required('Required'),
+      .required('Father Name Is Required'),
+    gender: Yup.string().required('Gender Is Required'),
     // cnic: Yup.string()
     //   .matches(
     //     /^[0-9]{5}-[0-9]{7}-[0-9]{1}$/,
@@ -242,19 +242,19 @@ const StudentRegistration = () => {
     //   )
     //   .required('Required'),
 
-    dob: Yup.string().required('Required'),
-    FatherOccupation: Yup.string().required('Required'),
-    presentAddress: Yup.string().required('Required'),
-    cityId: Yup.string().required('Required').nullable(),
-    whatsappNumber: Yup.string().required('Required'),
+    // dob: Yup.string().required('Date Of Birth Is Required'),
+    // FatherOccupation: Yup.string().required('Father Occupation Is Required'),
+    presentAddress: Yup.string().required('Postal Address Required'),
+    cityId: Yup.string().required('City Is Required').nullable(),
+    whatsappNumber: Yup.string().required('WhatsApp Number Is Required'),
     // otherNumber: Yup.string().required('Required'),
-    areaId: Yup.string().required('Required'),
+    areaId: Yup.string().required('Area Is Required').nullable(),
     // facebookAccount: Yup.string().required('Required'),
     // linkedinAccount: Yup.string().required('Required'),
     // instagramAccount: Yup.string().required('Required'),
-    // email: Yup.string().required('Required'),
-    degreeId: Yup.string().required('Required').nullable(),
-    image: Yup.string().required('Required'),
+    email: Yup.string().required('Email Is Required'),
+    degreeId: Yup.string().required('Education Is Required').nullable(),
+    image: Yup.string().required('Image Is Required'),
     // image: Yup.string().required('Required'),
   });
 

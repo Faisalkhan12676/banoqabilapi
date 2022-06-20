@@ -56,11 +56,11 @@ const Header = () => {
             .then(res => {
               if (res.status === 200) {
                 if (res.data.app === 1) {
-                    setIsNotified(true);
+                  setIsNotified(true);
                   setNotification(res.data);
                   console.log(res.data);
                 } else {
-                    setIsNotified(false);
+                  setIsNotified(false);
                 }
               }
             })
@@ -91,39 +91,37 @@ const Header = () => {
   };
 
   const handlenotify = async () => {
-   
     const value = await AsyncStorage.getItem('@userlogininfo');
     if (value !== null) {
-        // We have data!!
-        const data = JSON.parse(value);
+      // We have data!!
+      const data = JSON.parse(value);
 
-        axios
+      axios
         .post(
           `${BASE_URL}/Notification_log/Update`,
           {
             id: notification.id,
             studentId: data.userid,
-            email: "",
-            web: "",
-            app: "app",
-            sms: "",
+            email: '',
+            web: '',
+            app: 'app',
+            sms: '',
           },
           {
             headers: {
               Authorization: `Bearer ${data.token}`,
             },
-          }
+          },
         )
-        .then((res) => {
+        .then(res => {
           console.log(res);
           setIsNotified(false);
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     }
   };
-
 
   return (
     <>
@@ -140,7 +138,7 @@ const Header = () => {
         </View>
         <View
           style={{
-            height: 50,
+            height: 60,
             width: 100,
           }}>
           <Image
@@ -174,34 +172,28 @@ const Header = () => {
 
       {isnotified ? (
         <>
-          <View
-            style={{
-              height: 30,
-              width: '100%',
-              backgroundColor: 'red',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexDirection: 'row',
-            }}>
-            <Text
+          <TouchableOpacity onPress={handlenotify}>
+            <View
               style={{
-                color: 'white',
-                fontSize: 15,
-                marginHorizontal: 10,
+                height: 35,
+                width: '100%',
+                backgroundColor: 'red',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexDirection: 'row',
               }}>
-              {notification.notification}
-            </Text>
-            <Close
-              onPress={handlenotify}
-              style={{
-                marginRight: 10,
-              }}
-              name="close-outline"
-              size={20}
-              color="#fff"
-            />
-          </View>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 15,
+                  marginHorizontal: 10,
+                }}>
+                {notification.notification}
+              </Text>
+              <Icon name="close" size={25} style={{marginRight:8}} color="white" />
+            </View>
+          </TouchableOpacity>
         </>
       ) : (
         <></>

@@ -8,9 +8,16 @@ import {
   Modal,
   Alert,
   ScrollView,
+  Platform,
+  Linking,
 } from 'react-native';
 import React, {useState, useEffect, useRef, useCallback} from 'react';
-import {TextInput, HelperText, ActivityIndicator} from 'react-native-paper';
+import {
+  TextInput,
+  HelperText,
+  ActivityIndicator,
+  Checkbox,
+} from 'react-native-paper';
 import {Button} from 'react-native-paper';
 import {Formik, useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -23,6 +30,10 @@ import {useDispatch} from 'react-redux';
 import Recaptcha from 'react-native-recaptcha-that-works';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AlertIcon from 'react-native-vector-icons/Ionicons';
+import NetInfo from '@react-native-community/netinfo';
+import DeviceInfo from 'react-native-device-info';
+
+
 
 const validation = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -39,16 +50,49 @@ const Register = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isloading, setIsLoading] = useState(false);
   const [eye, setEye] = useState(true);
+  const [err, setErr] = useState('');
   const navigate = useNavigation();
   const dispatch = useDispatch();
-  const size = 'normal';
-  const $recaptcha = useRef();
-  const handleOpenPress = useCallback(() => {
-    $recaptcha.current.open();
-  }, []);
-  const handleClosePress = useCallback(() => {
-    $recaptcha.current.close();
-  }, []);
+  const [isdisabled, setIsdisabled] = useState(false);
+  const [isChecked, setIsChecked] = useState(true);
+  const [btnMsg,setbtnMsg] = useState("Register");
+
+  useEffect(()=>{
+
+    if(Platform.OS === "android"){
+      const getAllVersions = async () => {
+        axios
+          .get(`${BASE_URL}/Setting/GetAll`)
+          .then(res => {
+            const {version} = res.data[0];
+            console.log(version);
+            const currentVersion = DeviceInfo.getVersion();
+            if (currentVersion !== version) {
+              Alert.alert(
+                'Update',
+                'New version available',
+                [
+                  {
+                    text: 'Update',
+                    onPress: () =>
+                      Linking.openURL(
+                        'https://play.google.com/store/apps/details?id=com.banoQabil',
+                      ),
+                  },
+                ],
+                {cancelable: false},
+              );
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      };
+  
+      getAllVersions();
+    }
+  },[])
+
   //img sourse
   const imgSourse = require('../assets/logo2.png');
 
@@ -64,6 +108,8 @@ const Register = () => {
           </View>
           <Formik
             onSubmit={async (values, {resetForm}) => {
+              setIsdisabled(true);
+              setbtnMsg("Loading...")
               //remove spaces from values
               const name = values.name.trim();
               const username = values.username.trim();
@@ -83,7 +129,7 @@ const Register = () => {
                 })
                 .then(res => {
                   //SMS WORK
-
+                  //  console.log(res.data);
                   axios
                     .post(
                       `https://sms.montymobile.com/API/SendBulkSMS`,
@@ -107,20 +153,22 @@ const Register = () => {
 
                   //SMS WORK
                   setIsLoading(false);
-                  console.log(res.data);
+                  setIsdisabled(false);
+                  // console.log(res.data);
                   const data = JSON.stringify(res.data);
                   try {
                     AsyncStorage.setItem('@userlogininfo', data);
-                    console.log('data', data);
+                    // console.log('data', data);
 
                     setModalVisible(true);
-                    resetForm();
                   } catch (e) {
                     // saving error
                   }
                 })
-                .catch(err => console.log(err.response));
-              resetForm();
+                .catch(err => {
+                  setErr(err.response.data);
+                  setIsdisabled(false);
+                });
             }}
             initialValues={{
               name: '',
@@ -133,6 +181,7 @@ const Register = () => {
               <>
                 <View style={styles.form}>
                   <TextInput
+                    disabled={isdisabled}
                     label="Name"
                     onChangeText={handleChange('name')}
                     value={values.name}
@@ -145,6 +194,7 @@ const Register = () => {
                     {errors.name}
                   </HelperText>
                   <TextInput
+                    disabled={isdisabled}
                     onChangeText={handleChange('username')}
                     label="Username"
                     value={values.username}
@@ -154,10 +204,12 @@ const Register = () => {
                     activeUnderlineColor={color.primary}
                   />
                   <HelperText type="error" visible={errors.username}>
-                    {errors.username}
+                    {errors.username || err}
                   </HelperText>
+                  {/* <HelperText type='error'>{err}</HelperText> */}
 
                   <TextInput
+                    disabled={isdisabled}
                     onChangeText={handleChange('email')}
                     label="Mobile Number"
                     value={values.email}
@@ -170,6 +222,7 @@ const Register = () => {
                     {errors.email}
                   </HelperText>
                   <TextInput
+                    disabled={isdisabled}
                     label="Password"
                     secureTextEntry={eye}
                     value={values.password}
@@ -188,67 +241,41 @@ const Register = () => {
                   <HelperText type="error" visible={errors.password}>
                     {errors.password}
                   </HelperText>
+                  <View style={{
+                    flexDirection:"row",
+                    justifyContent:'flex-start',
+                    alignItems:'center',
+                    width:'100%'
+                  }}>
+                    <Checkbox
+                    status={isChecked ? 'checked' : 'unchecked'}
+                    onPress={()=>{
+                      if(isChecked){
+                        setIsChecked(false);
+                        setIsdisabled(true);
+                        setbtnMsg("Register");
+                      }else if(!isChecked){
+                        setIsChecked(true);
+                        setIsdisabled(false);
+                        setbtnMsg("Register");
+                      }
+                    }}
+                    />
+                    <Text style={{
+                      maxWidth:270
+                    }}>
+                      You'll Receive SMS And Email From banoqabil.pk To Share
+                      Updates With You.
+                    </Text>
+                  </View>
                   <Button
                     loading={isloading}
-                    onPress={handleOpenPress}
-                    disabled={isloading}
+                    onPress={handleSubmit}
+                    disabled={isdisabled}
                     mode="contained"
                     style={styles.buttonr}>
-                    Register
+                    {btnMsg}
                   </Button>
-                  <Recaptcha
-                    ref={$recaptcha}
-                    lang="en"
-                    headerComponent={
-                      <SafeAreaView>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-end',
-                            alignItems: 'center',
-                            paddingVertical: 10,
-                          }}>
-                          <Icon
-                            name="close"
-                            size={30}
-                            style={{marginRight: 10}}
-                            onPress={handleClosePress}
-                          />
-                        </View>
-                      </SafeAreaView>
-                    }
-                    loadingComponent={
-                      <>
-                        <ActivityIndicator color="green" />
-                        <Text style={{color: '#fff'}}>
-                          Loading reCaptcha...
-                        </Text>
-                      </>
-                    }
-                    siteKey="6LfkbEMgAAAAAIkc9Cd-pls5ZspaVywaGQfgG4Dl"
-                    baseUrl="http://127.0.0.1"
-                    size={size}
-                    theme="light"
-                    onError={err => {
-                      alert('SOMETHING WENT WRONG');
-                      // console.warn(err);
-                    }}
-                    onExpire={() => alert('TOKEN EXPIRED')}
-                    onVerify={token => {
-                      axios
-                        .post(`${BASE_URL}/Auth/Recaptcha?token=${token}`)
-                        .then(res => {
-                          if (res.data === true) {
-                            handleSubmit();
-                          } else {
-                            alert('Verification failed');
-                          }
-                        })
-                        .catch(err => {
-                          console.log(err);
-                        });
-                    }}
-                  />
 
                   <TouchableOpacity onPress={() => navigate.navigate('Login')}>
                     <Text style={{textAlign: 'center', color: '#000'}}>
@@ -256,36 +283,47 @@ const Register = () => {
                     </Text>
                   </TouchableOpacity>
 
-                    <View style={{
+                  <View
+                    style={{
                       flexDirection: 'row',
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                      <Text style={{
-                        marginRight:10,
-                      }}>A Project Of</Text>
-                      <View style={{
+                    <Text
+                      style={{
+                        marginRight: 10,
+                      }}>
+                      A Project Of
+                    </Text>
+                    <View
+                      style={{
                         width: 80,
                         height: 80,
                       }}>
-                      <Image source={imgSourse} style={{
-                        width: "100%",
-                        height: "100%",
-                        resizeMode: 'contain',
-                      }} />
-                      </View>
-
-                   
+                      <Image
+                        source={imgSourse}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          resizeMode: 'contain',
+                        }}
+                      />
                     </View>
-                      <Text style={{
-                        textAlign: 'center',
-                        color: '#000',
-                        marginBottom:30,
-                      }}>For More Info: <Text style={{
+                  </View>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      color: '#000',
+                      marginBottom: 30,
+                    }}>
+                    For More Info:{' '}
+                    <Text
+                      style={{
                         color: 'blue',
-                       
-                      }}>https://banoqabil.pk/</Text></Text>
-                  
+                      }}>
+                      https://banoqabil.pk/
+                    </Text>
+                  </Text>
                 </View>
               </>
             )}

@@ -33,19 +33,10 @@ const Login = () => {
   const [eye, setEye] = useState(true);
   const navigate = useNavigation();
   const dispatch = useDispatch();
-
   const loginstate = useSelector(state => state.LoginReducer.isLoggedIn);
   const [toast, setToast] = useState('');
 
-  const size = 'normal';
-  const $recaptcha = useRef();
-  const handleOpenPress = useCallback(() => {
-    $recaptcha.current.open();
-  }, []);
-  const handleClosePress = useCallback(() => {
-    $recaptcha.current.close();
-  }, []);
-
+  
   return (
     <>
       <Formik
@@ -70,6 +61,7 @@ const Login = () => {
               try {
                 AsyncStorage.setItem('@userlogininfo', data);
                 console.log('data', data);
+                
                 dispatch({type: 'LOGIN'});
                 if (loginstate) {
                   navigate.navigate('str');
@@ -153,7 +145,7 @@ const Login = () => {
              
               <Button
                 loading={isloading}
-                onPress={handleOpenPress}
+                onPress={handleSubmit}
                 disabled={isloading}
                 mode="contained"
                 style={styles.button}>
@@ -170,57 +162,7 @@ const Login = () => {
             </TouchableOpacity>
             
 
-            <Recaptcha
-              ref={$recaptcha}
-              lang="en"
-              headerComponent={
-                <SafeAreaView>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'flex-end',
-                      alignItems: 'center',
-                      paddingVertical: 10,
-                    }}>
-                    <Icon
-                      name="close"
-                      size={30}
-                      style={{marginRight: 10}}
-                      onPress={handleClosePress}
-                    />
-                  </View>
-                </SafeAreaView>
-              }
-              loadingComponent={
-                <>
-                  <ActivityIndicator color="green" />
-                  <Text style={{color: '#fff'}}>Loading reCaptcha...</Text>
-                </>
-              }
-              siteKey="6LfkbEMgAAAAAIkc9Cd-pls5ZspaVywaGQfgG4Dl"
-              baseUrl="http://127.0.0.1"
-              size={size}
-              theme="light"
-              onError={err => {
-                alert('SOMETHING WENT WRONG');
-                // console.warn(err);
-              }}
-              onExpire={() => alert('TOKEN EXPIRED')}
-              onVerify={token => {
-                axios
-                  .post(`${BASE_URL}/Auth/Recaptcha?token=${token}`)
-                  .then(res => {
-                    if (res.data === true) {
-                      handleSubmit();
-                    } else {
-                      alert('Verification failed');
-                    }
-                  })
-                  .catch(err => {
-                    console.log(err);
-                  });
-              }}
-            />
+          
           </View>
         )}
       </Formik>

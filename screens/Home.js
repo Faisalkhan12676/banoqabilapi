@@ -87,7 +87,10 @@ const Home = () => {
           flex: 1,
         }}>
         <Slider />
+
         <View style={styles.container}>
+          {/* <ion-icon name="alert-circle-outline"></ion-icon> */}
+
           <TouchableOpacity
             activeOpacity={1}
             onPress={() => navigation.navigate('selectedCourses')}>
@@ -175,6 +178,41 @@ const Home = () => {
             </View>
           </TouchableOpacity>
         </View>
+        <View
+          style={{
+            width: '100%',
+            height: 50,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '90%',
+              height: 50,
+              backgroundColor: '#ef233c',
+              borderRadius: 10,
+              marginHorizontal: 10,
+              marginVertical: 10,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 1,
+              },
+              shadowOpacity: 0.22,
+              shadowRadius: 2.22,
+
+              elevation: 3,
+              borderColor: color.divider,
+              borderWidth: 2.5,
+            }}>
+            {/* <ProjectIcon name="fa-3" size={60} style={styles.clr} /> */}
+            <Text style={styles.clr}>
+              Test will be conducted on 3rd of July 2022{' '}
+            </Text>
+          </View>
+        </View>
       </ScrollView>
     </>
   );
@@ -234,6 +272,7 @@ const styles = StyleSheet.create({
   clr: {
     color: '#fff',
     textAlign: 'center',
+    paddingHorizontal: 10,
   },
   logo: {
     width: '100%',

@@ -21,7 +21,7 @@ const ExamScreen = () => {
   const examquestionsfromapi = [
     {
       id: 1,
-      questionType: 'Checkbox',
+      questionType: 'Radio',
       question:
         'It was Sunday on Jan 1, 2006. What was the day of the week Jan 1, 2010?',
       options: [
